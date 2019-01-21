@@ -1,4 +1,4 @@
-package com.rio.bluetooth_connect
+package com.rio.bluetooth
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
