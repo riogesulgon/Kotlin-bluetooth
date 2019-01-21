@@ -88,15 +88,16 @@ class MainActivity : AppCompatActivity() {
             message.text = getString(R.string.NO_BLUETOOTH)
             return
         }
-        val connect = ConnectThread(btDevice, uid)
+        var connect:ConnectThread? = null
         execute.setOnClickListener {
-                connect.start()
+                connect = ConnectThread(btDevice, uid)
+                connect?.start()
         }
 
         test.setOnClickListener {
 
-            connect.write(PrinterCommand.POS_Print_Text("Hello World", BIG5, 0, 0, 0, 0))
-            connect.write(Command.LF)
+            connect?.write(PrinterCommand.POS_Print_Text("Hello World", BIG5, 0, 0, 0, 0))
+            connect?.write(Command.LF)
 
         }
     }
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                                 socket.inputStream.read(mmBuffer)
                             } catch (e: IOException) {
                                 Log.d(TAG, "Input stream was disconnected", e)
+                                mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, STATE_NONE).sendToTarget()
                                 break
                             }
 
@@ -148,8 +150,8 @@ class MainActivity : AppCompatActivity() {
                         }
 
                     } catch (e: IOException) {
-                       Log.d(TAG, "Failed to connect")
-                        throw(e)
+                       Log.d(TAG, "Failed to connect", e)
+                        mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, STATE_NONE).sendToTarget()
                     }
 
 
